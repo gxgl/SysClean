@@ -102,18 +102,33 @@ echo Done!
 ping 127.0.0.1 -n 5 -w 1000 >nul
 cls
 echo[
-echo Cleaning up User Temp directory
+echo Cleaning up User Temp and 
+echo Temporary Internet Files directories
 echo ==========================================
-FOR /D %%d IN ("%temp%") DO @rd /s /q "%%d"
-del %temp%\*.* /f /s /q
+IF EXIST "%SystemDrive%\Users\" (
+    for /D %%x in ("%SystemDrive%\Users\*") do ( 
+        rd /s /q "%%x\AppData\Local\Temp" 
+        md "%%x\AppData\Local\Temp" 
+        rd /s /q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files" 
+        md "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files"
+    )
+)
 echo[
 echo Done!
 ping 127.0.0.1 -n 5 -w 1000 >nul
 cls
 echo[
-echo Cleaning up System Logs
+echo Cleaning up System Logs and Temps
 echo ==========================================
+del %SystemDrive%\*.log /a /s /q /f
+del %SystemDrive%\*.tmp /a /s /q /f
 del %SystemRoot%\*.log /a /s /q /f
+del %SystemRoot%\*.tmp /a /s /q /f
+del %SystemRoot%\System32\*.log /a /s /q /f
+del %SystemRoot%\System32\*.tmp /a /s /q /f
+del %SystemRoot%\System32\drivers\*.log /a /s /q /f
+del %SystemRoot%\System32\drivers\*.tmp /a /s /q /f
+del %SystemRoot%\System32\LogFiles\*.* /a /s /q /f
 echo[
 cls
 echo[
@@ -125,7 +140,7 @@ del %SystemRoot%\MEMORY.DMP
 echo[
 cls
 echo[
-echo Cleaning up all Temporary Internet Files
+echo Cleaning up all Internet Explorer
 echo ==========================================
 echo[
 RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 4351
